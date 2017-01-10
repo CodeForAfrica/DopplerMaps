@@ -1,0 +1,26 @@
+{
+  "name": "",
+  "version": "",
+  "dependencies": {
+    "d3": "4.4.0",
+    "d3-geo-projection": "1.2.1",
+    "topojson": "2.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "6.21.0",
+    "babel-preset-es2015-rollup": "3.0.0",
+    "browser-sync": "2.18.6",
+    "del": "2.2.2",
+    "gulp": "3.9.1",
+    "gulp-changed-in-place": "2.0.3",
+    "gulp-jshint": "2.0.4",
+    "gulp-load-plugins": "1.4.0",
+    "gulp-uglify": "2.0.0",
+    "jshint": "2.9.4",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-node-resolve": "2.0.0",
+    "rollup-stream": "1.14.0",
+    "vinyl-buffer": "1.0.0",
+    "vinyl-source-stream": "1.1.0"
+  }
+}
