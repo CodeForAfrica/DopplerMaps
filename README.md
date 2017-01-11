@@ -24,6 +24,8 @@
 
 ### CSV file
 
+Doppler Maps reads data from a CSV file. The first column of the CSV file **must** be named `Geographic Administrative Unit`.
+
 | Geographic Administrative Unit | 2003 | 2004 | 2005 |
 | ------------------------------ | ---- | ---- | ---- |
 | Alabama                        | 5    | 13   | 12   |
