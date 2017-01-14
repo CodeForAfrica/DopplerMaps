@@ -202,6 +202,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     renderMap();
                     window.addEventListener('resize', renderMap);
+
+                    // Create map label.
+                    map.append('div')
+                        .attr('class', 'doppler-maps__date')
+                        .style('margin-top', '1em')
+                        .style('font-size', '16px')
+                        .style('text-align', 'center')
+                        .text(d.year);
                 });
             });
     });
