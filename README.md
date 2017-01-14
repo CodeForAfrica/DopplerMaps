@@ -9,14 +9,20 @@
     <div class="doppler-maps"
         data-geo-src="..."
         data-src="..."
-        data-rows="..."
         data-columns="..."
         data-map-projection="..."
-        data-legend-title="...">
+        data-title="..."
+        data-legend-number-of-colors="..."
+        data-color-lowest="..."
+        data-color-highest="...">
     </div>
     <script src="..."><script>
 </body>
 ```
+
+### API Reference
+
+...
 
 ### GeoJSON file
 

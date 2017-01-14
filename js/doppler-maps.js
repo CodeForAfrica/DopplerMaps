@@ -1,6 +1,8 @@
-import * as d3 from 'd3';
+import * as d3All from 'd3';
+import * as d3GeoProjection from 'd3-geo-projection';
 import * as topojson from 'topojson';
-import * as projections from 'd3-geo-projection';
+
+let d3 = Object.assign({}, d3All, d3GeoProjection);
 
 let compareWords = (a, b) => {
     a = a.toLowerCase();
@@ -38,10 +40,42 @@ let reformatData = (data) => {
     return reformattedData;
 };
 
+let optionIsProvided = (option) => {
+    return option !== '' && typeof option !== 'undefined';
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     let allDopplerMapsEl = document.querySelectorAll('.doppler-maps');
     [...allDopplerMapsEl].forEach((dopplerMapsEl) => {
         let dopplerMaps = d3.select(dopplerMapsEl);
+
+        let options = {
+            geoSrc:                 dopplerMapsEl.dataset.geoSrc,
+            src:                    dopplerMapsEl.dataset.src,
+            columns:                dopplerMapsEl.dataset.columns,
+            mapProjection:          dopplerMapsEl.dataset.mapProjection,
+            title:                  dopplerMapsEl.dataset.title,
+            legendNumberOfColors:   dopplerMapsEl.dataset.legendNumberOfColors,
+            colorLowest:            dopplerMapsEl.dataset.colorLowest,
+            colorHighest:           dopplerMapsEl.dataset.colorHighest
+        };
+
+        if (!optionIsProvided(options.geoSrc)) {
+            throw new Error('Please provide a \'data-geo-src\' attribute.');
+        }
+
+        if (!optionIsProvided(options.src)) {
+            throw new Error('Please provide a \'data-src\' attribute.');
+        }
+
+        let projection = null;
+        if (!optionIsProvided(options.mapProjection)) {
+            throw new Error('Please provide a \'data-map-projection\' attribute.');
+        } else if (typeof d3[options.mapProjection] === 'undefined') {
+            throw new Error('The provided \'data-map-projection\' attribute value does not correspond to a map projection.');
+        } else {
+            projection = d3[options.mapProjection]();
+        }
 
         // Add legend container.
         let mapLegend = dopplerMaps.append('div')
@@ -49,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .style('text-align', 'center');
 
         // Add title only if the user specified one.
-        if (dopplerMapsEl.dataset.legendTitle !== '' && typeof dopplerMapsEl.dataset.legendTitle !== 'undefined') {
+        if (optionIsProvided(options.title)) {
             mapLegend.append('div')
                 .attr('class', 'doppler-maps__legend-title')
                 .style('margin-bottom', '0.4em')
-                .html(dopplerMapsEl.dataset.legendTitle);
+                .html(options.title);
         }
 
         // Add maps container.
@@ -61,23 +95,25 @@ document.addEventListener('DOMContentLoaded', () => {
             .attr('class', 'doppler-maps__maps-container');
 
         d3.queue()
-            .defer(d3.json, dopplerMapsEl.dataset.geoSrc)
-            .defer(d3.csv, dopplerMapsEl.dataset.src)
+            .defer(d3.json, options.geoSrc)
+            .defer(d3.csv, options.src)
             .await((error, geodata, data) => {
                 if (error) throw error;
 
-                // Sort data.
+                // Sort and reformat data.
                 data.sort((a, b) => compareWords(a['Geographic Administrative Unit'], b['Geographic Administrative Unit']));
-
-                // Sort geographic data.
-                let geometries = geodata.objects['us-states'].geometries;
-                geometries.sort((a, b) => compareWords(a.properties.name, b.properties.name));
-
                 data = reformatData(data);
 
+                // Sort geographic data.
+                geodata.objects['us-states'].geometries.sort((a, b) => compareWords(a.properties.name, b.properties.name));
+
+                // Convert geographic data from TopoJSON to GeoJSON.
+                let featureCollection = topojson.feature(geodata, geodata.objects['us-states']);
+                let geographicAdministrativeUnits = featureCollection.features;
+
                 // Create color scale.
-                let interpolator = d3.interpolateRgb(dopplerMapsEl.dataset.colorLowest, dopplerMapsEl.dataset.colorHighest);
-                let colorPalette = d3.quantize(interpolator, dopplerMapsEl.dataset.legendNumberOfColors);
+                let interpolator = d3.interpolateRgb(options.colorLowest, options.colorHighest);
+                let colorPalette = d3.quantize(interpolator, options.legendNumberOfColors);
                 let max = d3.max(data, d => d3.max(d.values, d => d.value));
                 let min = d3.min(data, d => d3.min(d.values, d => d.value));
                 let colorScale = d3.scaleQuantize()
@@ -130,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let map = mapContainer.append('div')
                         .attr('class', 'doppler-maps__map')
                         .style('display', 'inline-block')
-                        .style('width', 100 / dopplerMapsEl.dataset.columns + '%');
+                        .style('width', 100 / options.columns + '%');
 
                     let mapEl = map.node();
 
@@ -140,9 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Create 2D rendering context.
                     let context = canvas.node().getContext('2d');
 
-                    let featureCollection = topojson.feature(geodata, geodata.objects['us-states']);
-                    let geographicAdministrativeUnits = featureCollection.features;
-                    let projection = d3.geoAlbersUsa();
                     let path = d3.geoPath().context(context).projection(projection);
                     let bounds = path.bounds(featureCollection);
                     let aspectRatio = (bounds[1][1] - bounds[0][1]) / (bounds[1][0] - bounds[0][0]);
