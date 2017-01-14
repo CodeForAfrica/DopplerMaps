@@ -2,24 +2,6 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson';
 import * as projections from 'd3-geo-projection';
 
-let parseData = (d) => {
-    let values = [];
-
-    Object.keys(d).forEach(key => {
-        if (key !== 'Geographic Administrative Unit') {
-            values.push({
-                'year': +key,
-                'value': +d[key]
-            });
-        }
-    });
-
-    return {
-        'Geographic Administrative Unit': d['Geographic Administrative Unit'],
-        values: values
-    };
-};
-
 let compareWords = (a, b) => {
     a = a.toLowerCase();
     b = b.toLowerCase();
@@ -30,6 +12,30 @@ let compareWords = (a, b) => {
     } else {
         return 0;
     }
+};
+
+let reformatData = (data) => {
+    let reformattedData = [];
+
+    data.columns.forEach((column) => {
+        if (column !== 'Geographic Administrative Unit') {
+            reformattedData.push({
+                'year': +column,
+                'values': []
+            });
+        }
+    });
+
+    data.forEach((row) => {
+        reformattedData.forEach((d) => {
+            d.values.push({
+                'Geographic Administrative Unit': row['Geographic Administrative Unit'],
+                'value': +row[d.year]
+            });
+        });
+    });
+
+    return reformattedData;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -56,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         d3.queue()
             .defer(d3.json, dopplerMapsEl.dataset.geoSrc)
-            .defer(d3.csv, dopplerMapsEl.dataset.src, parseData)
+            .defer(d3.csv, dopplerMapsEl.dataset.src)
             .await((error, geodata, data) => {
                 if (error) throw error;
 
@@ -66,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Sort geographic data.
                 let geometries = geodata.objects['us-states'].geometries;
                 geometries.sort((a, b) => compareWords(a.properties.name, b.properties.name));
+
+                data = reformatData(data);
 
                 // Create color scale.
                 let interpolator = d3.interpolateRgb(dopplerMapsEl.dataset.colorLowest, dopplerMapsEl.dataset.colorHighest);
@@ -117,41 +125,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     .style('line-height', '1em')
                     .text(d => d3.format('.1f')(colorScale.invertExtent(d)[1]));
 
-                // Create HTML5 Canvas element.
-                let canvas = mapContainer.append('canvas').style('display', 'block');
+                // Create one map for each year.
+                data.forEach((d) => {
+                    let map = mapContainer.append('div')
+                        .attr('class', 'doppler-maps__map')
+                        .style('display', 'inline-block')
+                        .style('width', 100 / dopplerMapsEl.dataset.columns + '%');
 
-                // Create 2D rendering context.
-                let context = canvas.node().getContext('2d');
+                    let mapEl = map.node();
 
-                let featureCollection = topojson.feature(geodata, geodata.objects['us-states']);
-                let geographicAdministrativeUnits = featureCollection.features;
-                let projection = d3.geoAlbersUsa();
-                let path = d3.geoPath().context(context).projection(projection);
-                let bounds = path.bounds(featureCollection);
-                let aspectRatio = (bounds[1][1] - bounds[0][1]) / (bounds[1][0] - bounds[0][0]);
-                let width = parseFloat(getComputedStyle(dopplerMapsEl).width);
-                let height = width * aspectRatio;
+                    // Create HTML5 Canvas element.
+                    let canvas = map.append('canvas').style('display', 'block');
 
-                let renderMap = () => {
-                    width = parseFloat(getComputedStyle(dopplerMapsEl).width);
-                    height = width * aspectRatio;
+                    // Create 2D rendering context.
+                    let context = canvas.node().getContext('2d');
 
-                    projection.fitSize([width, height], featureCollection);
-                    path.projection(projection);
+                    let featureCollection = topojson.feature(geodata, geodata.objects['us-states']);
+                    let geographicAdministrativeUnits = featureCollection.features;
+                    let projection = d3.geoAlbersUsa();
+                    let path = d3.geoPath().context(context).projection(projection);
+                    let bounds = path.bounds(featureCollection);
+                    let aspectRatio = (bounds[1][1] - bounds[0][1]) / (bounds[1][0] - bounds[0][0]);
+                    let width = null, height = null;
 
-                    canvas.attr('width', width).attr('height', height);
+                    let renderMap = () => {
+                        width = parseFloat(getComputedStyle(mapEl).width);
+                        height = width * aspectRatio;
 
-                    geographicAdministrativeUnits.forEach((geographicAdministrativeUnit, i) => {
-                        context.fillStyle = colorScale(data[i].values[0].value);
-                        context.beginPath();
-                        path(geographicAdministrativeUnit);
-                        context.stroke();
-                        context.fill();
-                    });
-                };
+                        projection.fitSize([width, height], featureCollection);
+                        path.projection(projection);
 
-                renderMap();
-                window.addEventListener('resize', renderMap);
+                        canvas.attr('width', width).attr('height', height);
+
+                        geographicAdministrativeUnits.forEach((geographicAdministrativeUnit, i) => {
+                            let value = d.values[i].value;
+                            context.fillStyle = colorScale(value);
+                            context.beginPath();
+                            path(geographicAdministrativeUnit);
+                            context.stroke();
+                            context.fill();
+                        });
+                    };
+
+                    renderMap();
+                    window.addEventListener('resize', renderMap);
+                });
             });
     });
 });
