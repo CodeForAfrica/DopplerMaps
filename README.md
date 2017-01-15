@@ -27,7 +27,7 @@ Doppler Maps uses [data attributes](https://developer.mozilla.org/en/docs/Web/Gu
 
 ### data-geo-src [required]
 
-#### Descriptoin
+#### Description
 
 Value must be a path to a TopoJSON file.
 
