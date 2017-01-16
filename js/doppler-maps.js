@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             geoSrc:                 dopplerMapsEl.dataset.geoSrc,
             src:                    dopplerMapsEl.dataset.src,
             columns:                dopplerMapsEl.dataset.columns,
+            rows:                   dopplerMapsEl.dataset.rows,
             mapProjection:          dopplerMapsEl.dataset.mapProjection,
             title:                  dopplerMapsEl.dataset.title,
             numberOfColors:         dopplerMapsEl.dataset.numberOfColors,
@@ -162,7 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     .text(d => d3.format('.1f')(colorScale.invertExtent(d)[1]));
 
                 // Create one map for each year.
-                data.forEach((d) => {
+                data.forEach((d, i) => {
+
+                    // Do not render a map if the maximum number of rows
+                    // specified with the option "data-rows" is exceeded.
+                    if (optionIsProvided(options.rows)) {
+                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = options.columns * options.rows;
+                        const MAP_INDEX = i + 1;
+                        if (MAP_INDEX > MAXIMUM_NUMBER_OF_MAPS_TO_RENDER) {
+                            return;
+                        }
+                    }
+
                     let map = mapContainer.append('div')
                         .attr('class', 'doppler-maps__map')
                         .style('display', 'inline-block')

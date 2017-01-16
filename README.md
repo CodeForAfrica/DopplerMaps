@@ -10,6 +10,7 @@
         data-geo-src="data/geodata-us-states.json"
         data-src="data/data-us-states.csv"
         data-columns="3"
+        data-rows="2"
         data-map-projection="geoAlbersUsa"
         data-title="<b>Occurrences</b> per 100,000"
         data-number-of-colors="6"
@@ -54,6 +55,18 @@ Value must be a path to a valid CSV file. The first column of the CSV file **mus
 
 ```html
 data-src="data/data-us-states.csv"
+```
+
+### data-rows [optional]
+
+#### Description
+
+Value must be a positive integer. This option sets the maximum number of rows. If no value is specified, the maximum number of rows is infinite.
+
+#### Examples
+
+```html
+data-rows="2"
 ```
 
 ### data-map-projection [required]
