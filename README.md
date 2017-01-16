@@ -21,6 +21,21 @@
 </body>
 ```
 
+```html
+<body>
+    <div class="doppler-maps"
+        data-geo-src="data/geodata-us-states.json"
+        data-src="data/data-us-states.csv"
+        data-columns="3"
+        data-rows="2"
+        data-map-projection="geoAlbersUsa"
+        data-title="<b>Occurrences</b> per 100,000"
+        data-colors="yellow:orange:red">
+    </div>
+    <script src="dist/doppler-maps.min.js"></script>
+</body>
+```
+
 ## API Reference
 
 Doppler Maps uses [data attributes](https://developer.mozilla.org/en/docs/Web/Guide/HTML/Using_data_attributes) to provide configuration options. Listed below are required and optional data attributes you can set to configure Doppler Maps.
@@ -99,7 +114,8 @@ data-title="<b>Occurrences<b> per 100,000"
 
 #### Description
 
-Value must be positive integer. Doppler Maps uses this number to compute the color palette used in choropleth maps.
+Value must be positive integer.
+Doppler Maps uses this number to compute the color palette used in choropleth maps.
 
 #### Examples
 
@@ -111,7 +127,8 @@ data-number-of-colors="6"
 
 #### Description
 
-Values must be a valid CSS color. Doppler Maps uses this color to compute the color palette used in choropleth maps.
+Value must be a [CSS Color Module Level 3](https://www.w3.org/TR/css3-color/#colorunits) specifier.
+Doppler Maps uses this color to compute the color palette used in choropleth maps.
 
 #### Examples
 
@@ -125,7 +142,8 @@ data-color-lowest="rgb(255, 255, 0)"
 
 #### Description
 
-Values must be a valid CSS color. Doppler Maps uses this color to compute the color palette used in choropleth maps.
+Value must be a [CSS Color Module Level 3](https://www.w3.org/TR/css3-color/#colorunits) specifier.
+Doppler Maps uses this color to compute the color palette used in choropleth maps.
 
 #### Examples
 
@@ -135,6 +153,21 @@ data-color-highest="#f00"
 data-color-highest="rgb(255, 0, 0)"
 ```
 
+### data-colors [optional]
+
+#### Description
+
+Value must be a colon-separated list of a [CSS Color Module Level 3](https://www.w3.org/TR/css3-color/#colorunits) specifier.
+This option can be used instead of `data-number-of-colors`, `data-color-lowest` and `data-color-highest`.
+
+#### Examples
+
+```html
+data-colors="yellow:orange:red"
+data-colors="#ff0:#ffa500:#f00"
+data-colors="rgb(255, 255, 0):rgb(255, 165, 0):rgb(255, 0, 0)"
+data-colors="yellow:#ffa500:rgb(255, 0, 0)"
+```
 
 ## Setup instructions
 
@@ -159,6 +192,7 @@ gulp
 ```
 
 4) Set up a server and watch for changes:
+
 
 ```
 gulp serve

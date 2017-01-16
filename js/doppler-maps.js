@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
             title:                  dopplerMapsEl.dataset.title,
             numberOfColors:         dopplerMapsEl.dataset.numberOfColors,
             colorLowest:            dopplerMapsEl.dataset.colorLowest,
-            colorHighest:           dopplerMapsEl.dataset.colorHighest
+            colorHighest:           dopplerMapsEl.dataset.colorHighest,
+            colors:                 dopplerMapsEl.dataset.colors
         };
 
         if (!optionIsProvided(options.geoSrc)) {
@@ -113,10 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 let geographicAdministrativeUnits = featureCollection.features;
 
                 // Create color scale.
-                let interpolator = d3.interpolateRgb(options.colorLowest, options.colorHighest);
-                let colorPalette = d3.quantize(interpolator, options.numberOfColors);
                 let max = d3.max(data, d => d3.max(d.values, d => d.value));
                 let min = d3.min(data, d => d3.min(d.values, d => d.value));
+                let colorPalette = null;
+                if (optionIsProvided(options.colors)) {
+                    colorPalette = options.colors.split(':');
+                } else {
+                    let interpolator = d3.interpolateRgb(options.colorLowest, options.colorHighest);
+                    colorPalette = d3.quantize(interpolator, options.numberOfColors);
+                }
                 let colorScale = d3.scaleQuantize()
                     .domain([min, max])
                     .range(colorPalette);
