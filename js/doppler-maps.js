@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             columns:                dopplerMapsEl.dataset.columns,
             mapProjection:          dopplerMapsEl.dataset.mapProjection,
             title:                  dopplerMapsEl.dataset.title,
-            legendNumberOfColors:   dopplerMapsEl.dataset.legendNumberOfColors,
+            numberOfColors:         dopplerMapsEl.dataset.numberOfColors,
             colorLowest:            dopplerMapsEl.dataset.colorLowest,
             colorHighest:           dopplerMapsEl.dataset.colorHighest
         };
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Create color scale.
                 let interpolator = d3.interpolateRgb(options.colorLowest, options.colorHighest);
-                let colorPalette = d3.quantize(interpolator, options.legendNumberOfColors);
+                let colorPalette = d3.quantize(interpolator, options.numberOfColors);
                 let max = d3.max(data, d => d3.max(d.values, d => d.value));
                 let min = d3.min(data, d => d3.min(d.values, d => d.value));
                 let colorScale = d3.scaleQuantize()

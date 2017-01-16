@@ -12,7 +12,7 @@
         data-columns="3"
         data-map-projection="geoAlbersUsa"
         data-title="<b>Occurrences</b> per 100,000"
-        data-legend-number-of-colors="6"
+        data-number-of-colors="6"
         data-color-lowest="yellow"
         data-color-highest="red">
     </div>
@@ -49,7 +49,7 @@ Value must be a path to a valid CSV file. The first column of the CSV file **mus
 | Alabama                        | 5    | 13   | 12   |
 | Alaska                         | 8    | 10   | 12   |
 | Arizona                        | 6    | 8    | 10   |
-    
+
 #### Examples
 
 ```html
@@ -82,7 +82,7 @@ Value must be a string. It supports html tags such as `<b>` and `<i>`.
 data-title="<b>Occurrences<b> per 100,000"
 ```
 
-### data-legend-number-of-colors [required]
+### data-number-of-colors [required]
 
 #### Description
 
@@ -91,7 +91,7 @@ Value must be positive integer. Doppler Maps uses this number to compute the col
 #### Examples
 
 ```html
-data-legend-number-of-colors="6"
+data-number-of-colors="6"
 ```
 
 ### data-color-lowest [required]
