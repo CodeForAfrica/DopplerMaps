@@ -113,7 +113,7 @@ Value must be a positive integer. This option sets the maximum number of rows. I
 data-rows="2"
 ```
 
-### data-map-projection [required]
+### data-map-projection [optional]
 
 #### Description
 

@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let projection = null;
         if (!optionIsProvided(options.mapProjection)) {
-            throw new Error('Please provide a \'data-map-projection\' attribute.');
+            projection = d3.geoMercator();
         } else if (typeof d3[options.mapProjection] === 'undefined') {
             throw new Error('The provided \'data-map-projection\' attribute value does not correspond to a map projection.');
         } else {
