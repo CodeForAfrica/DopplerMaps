@@ -20,7 +20,7 @@ let reformatData = (data) => {
     let reformattedData = [];
 
     data.columns.forEach((column) => {
-        if (column !== 'Geographic Administrative Unit') {
+        if (column !== 'location') {
             reformattedData.push({
                 'year': +column,
                 'values': []
@@ -31,7 +31,7 @@ let reformatData = (data) => {
     data.forEach((row) => {
         reformattedData.forEach((d) => {
             d.values.push({
-                'Geographic Administrative Unit': row['Geographic Administrative Unit'],
+                'location': row.location,
                 'value': +row[d.year]
             });
         });
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) throw error;
 
                 // Sort and reformat data.
-                data.sort((a, b) => compareWords(a['Geographic Administrative Unit'], b['Geographic Administrative Unit']));
+                data.sort((a, b) => compareWords(a.location, b.location));
                 data = reformatData(data);
 
                 // Sort geographic data.

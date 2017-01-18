@@ -87,13 +87,13 @@ data-geo-src="https://d3js.org/us-10m.v1.json"
 
 #### Description
 
-Value must be a path to a valid CSV file. The first column of the CSV file **must** be named `Geographic Administrative Unit`.
+Value must be a path to a valid CSV file. The first column of the CSV file **must** be named `location` (case-insensitive).
 
-| Geographic Administrative Unit | 2003 | 2004 | 2005 |
-| ------------------------------ | ---- | ---- | ---- |
-| Alabama                        | 5    | 13   | 12   |
-| Alaska                         | 8    | 10   | 12   |
-| Arizona                        | 6    | 8    | 10   |
+| location  | 2003 | 2004 | 2005 |
+| --------- | ---- | ---- | ---- |
+| Alabama   | 5    | 13   | 12   |
+| Alaska    | 8    | 10   | 12   |
+| Arizona   | 6    | 8    | 10   |
 
 #### Examples
 
