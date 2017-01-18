@@ -107,10 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 data = reformatData(data);
 
                 // Sort geographic data.
-                geodata.objects['us-states'].geometries.sort((a, b) => compareWords(a.properties.name, b.properties.name));
+                geodata.objects.subunits.geometries.sort((a, b) => compareWords(a.properties.name, b.properties.name));
 
                 // Convert geographic data from TopoJSON to GeoJSON.
-                let featureCollection = topojson.feature(geodata, geodata.objects['us-states']);
+                let featureCollection = topojson.feature(geodata, geodata.objects.subunits);
                 let geographicAdministrativeUnits = featureCollection.features;
 
                 // Create color scale.

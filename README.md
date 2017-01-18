@@ -45,7 +45,36 @@ Doppler Maps uses [data attributes](https://developer.mozilla.org/en/docs/Web/Gu
 
 #### Description
 
-Value must be a path to a TopoJSON file.
+Value must be a path to a [TopoJSON](https://github.com/topojson/topojson-specification) file. The TopoJSON file must have exactly **one** geometry object named `subunits`. For example:
+
+```javascript
+{
+    "type": "Topology",
+    "objects": {
+        "subunits": {
+            "type": "GeometryCollection",
+            "geometries": [
+                {
+                    "type": "Polygon"
+                    "properties": {
+                        "name": "..."
+                    },
+                    "arcs": [...]
+                },
+                {
+                    "type": "MultiPolygon",
+                    "properties": {
+                        "name": "..."
+                    },
+                    "arcs": [...]
+                },
+                ...
+            ]
+        }
+    },
+    "arcs": [...]
+}
+```
 
 #### Examples
 
