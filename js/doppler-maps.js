@@ -16,30 +16,6 @@ let compareWords = (a, b) => {
     }
 };
 
-let reformatData = (data) => {
-    let reformattedData = [];
-
-    data.columns.forEach((column) => {
-        if (column !== 'location') {
-            reformattedData.push({
-                'year': +column,
-                'values': []
-            });
-        }
-    });
-
-    data.forEach((row) => {
-        reformattedData.forEach((d) => {
-            d.values.push({
-                'location': row.location,
-                'value': +row[d.year]
-            });
-        });
-    });
-
-    return reformattedData;
-};
-
 let optionIsProvided = (option) => {
     return option !== '' && typeof option !== 'undefined';
 };
@@ -102,20 +78,57 @@ document.addEventListener('DOMContentLoaded', () => {
             .await((error, geodata, data) => {
                 if (error) throw error;
 
-                // Sort and reformat data.
-                data.sort((a, b) => compareWords(a.location, b.location));
-                data = reformatData(data);
-
-                // Sort geographic data.
-                geodata.objects.subunits.geometries.sort((a, b) => compareWords(a.properties.name, b.properties.name));
+                const SUBUNIT_COLUMN_NAME = 'location';
 
                 // Convert geographic data from TopoJSON to GeoJSON.
                 let featureCollection = topojson.feature(geodata, geodata.objects.subunits);
-                let geographicAdministrativeUnits = featureCollection.features;
+                let subunits = featureCollection.features;
+
+                // Create a lookup table: subunit name (key) -> corresponding row values (value).
+                let lookupTable = [];
+                data.forEach((row) => {
+                    let subunitName = row[SUBUNIT_COLUMN_NAME];
+                    delete row[SUBUNIT_COLUMN_NAME];
+                    lookupTable[subunitName] = row;
+                });
+
+                // Merge statistical data and geographic data.
+                let columns = data.columns;
+                data = [];
+                data.columns = columns;
+                subunits.forEach((subunit) => {
+                    data.push({
+                        'subunit': subunit,
+                        'values': (typeof lookupTable[subunit.properties.name] === 'undefined' ? null : lookupTable[subunit.properties.name])
+                    });
+                });
+
+                // Sort data by subunit name in ascending order.
+                data.sort((a, b) => compareWords(a.subunit.properties.name, b.subunit.properties.name));
+
+                // Create final dataset to be used by Doppler Maps.
+                let mapsData = [];
+
+                data.columns.forEach((columnTitle) => {
+                    if (columnTitle === 'location') return;
+                    mapsData.push({
+                        'year': +columnTitle,
+                        'values': []
+                    });
+                });
+
+                data.forEach((row) => {
+                    mapsData.forEach((mapData) => {
+                        mapData.values.push({
+                            'statisticalValue': (row.values === null ? null : +row.values[mapData.year]),
+                            'subunit': row.subunit
+                        });
+                    });
+                });
 
                 // Create color scale.
-                let max = d3.max(data, d => d3.max(d.values, d => d.value));
-                let min = d3.min(data, d => d3.min(d.values, d => d.value));
+                let max = d3.max(mapsData, d => d3.max(d.values, d => d.statisticalValue));
+                let min = d3.min(mapsData, d => d3.min(d.values, d => d.statisticalValue));
                 let colorPalette = null;
                 if (optionIsProvided(options.colors)) {
                     colorPalette = options.colors.split(':');
@@ -169,10 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     .text(d => d3.format('.1f')(colorScale.invertExtent(d)[1]));
 
                 // Create one map for each year.
-                data.forEach((d, i) => {
-
+                mapsData.forEach((mapData, i) => {
                     // Do not render a map if the maximum number of rows
-                    // specified with the option "data-rows" is exceeded.
+                    // specified with the option 'data-rows' is exceeded.
                     if (optionIsProvided(options.rows)) {
                         const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = options.columns * options.rows;
                         const MAP_INDEX = i + 1;
@@ -208,11 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         canvas.attr('width', width).attr('height', height);
 
-                        geographicAdministrativeUnits.forEach((geographicAdministrativeUnit, i) => {
-                            let value = d.values[i].value;
-                            context.fillStyle = colorScale(value);
+                        mapData.values.forEach((value) => {
+                            context.fillStyle = (value.statisticalValue === null ? '#c7c8c9' : colorScale(value.statisticalValue));
                             context.beginPath();
-                            path(geographicAdministrativeUnit);
+                            path(value.subunit);
                             context.stroke();
                             context.fill();
                         });
@@ -227,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .style('margin-top', '1em')
                         .style('font-size', '16px')
                         .style('text-align', 'center')
-                        .text(d.year);
+                        .text(mapData.year);
                 });
             });
     });
