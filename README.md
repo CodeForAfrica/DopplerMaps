@@ -242,8 +242,3 @@ gulp serve
 
 + Chrome for Android 54.
 + Chrome & Safari for iOS 9 and 10.
-
-
-## License
-
-All rights reserved.
