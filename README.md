@@ -1,6 +1,6 @@
 # Doppler Maps
 
-...
+Doppler Maps is a tool based on D3.js for generating lightweight, responsive multiple maps. It visualises issues and phenomena over time on a series of choropleth maps.
 
 ## Usage
 
