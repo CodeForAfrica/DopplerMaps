@@ -7,8 +7,8 @@ Doppler Maps is a tool based on D3.js for generating lightweight, responsive mul
 ```html
 <body>
     <div class="doppler-maps"
-        data-geo-src="data/geodata-us-states.json"
-        data-src="data/data-us-states.csv"
+        data-geo-src="data/us-states-random-data/geodata-us-states.json"
+        data-src="data/us-states-random-data/data-us-states.csv"
         data-columns="3"
         data-rows="2"
         data-map-projection="geoAlbersUsa"
@@ -25,8 +25,8 @@ Doppler Maps is a tool based on D3.js for generating lightweight, responsive mul
 ```html
 <body>
     <div class="doppler-maps"
-        data-geo-src="data/geodata-us-states.json"
-        data-src="data/data-us-states.csv"
+        data-geo-src="data/us-states-random-data/geodata-us-states.json"
+        data-src="data/us-states-random-data/data-us-states.csv"
         data-columns="3"
         data-rows="2"
         data-map-projection="geoAlbersUsa"
@@ -81,7 +81,7 @@ Value must be a path to a [TopoJSON](https://github.com/topojson/topojson-specif
 #### Examples
 
 ```html
-data-geo-src="data/geodata-us-states.json"
+data-geo-src="data/us-states-random-data/geodata-us-states.json"
 data-geo-src="https://d3js.org/us-10m.v1.json"
 ```
 
@@ -100,7 +100,7 @@ Value must be a path to a valid CSV file. The first column of the CSV file **mus
 #### Examples
 
 ```html
-data-src="data/data-us-states.csv"
+data-src="data/us-states-random-data/data-us-states.csv"
 ```
 
 ### data-rows [optional]
