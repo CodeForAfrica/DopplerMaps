@@ -6,18 +6,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <div style="width: 90%; max-width: 1020px; margin: 0 auto;">
-            <div class="doppler-maps"
-                data-geo-src="data/us-states-random-data/geodata-us-states.json"
-                data-src="data/us-states-random-data/data-us-states.csv"
-                data-columns="3"
-                data-rows="2"
-                data-map-projection="geoAlbersUsa"
-                data-title="<b>Occurrences</b> per 100,000"
-                data-number-of-colors="6"
-                data-color-lowest="yellow"
-                data-color-highest="red"
-                data-color-no-data="#bbb">
+        <div style="width: 90%; max-width: 1200px; margin: 0 auto;">
+            <div style="width: 49%; margin-right: 2%; float: left;">
+                <div class="doppler-maps"
+                    data-geo-src="data/africa-malaria/geodata-africa.json"
+                    data-src="data/africa-malaria/Intervention_ITN.csv"
+                    data-columns="4"
+                    data-map-projection="geoMercator"
+                    data-title="Cases of Malaria in Africa"
+                    data-number-of-colors="6"
+                    data-color-lowest="#fee0d2"
+                    data-color-highest="#de2d26"
+                    data-color-no-data="#eee">
+                </div>
+            </div>
+            <div style="width: 49%; float: left;">
+                <div class="doppler-maps"
+                    data-geo-src="data/us-states-random-data/geodata-us-states.json"
+                    data-src="data/us-states-random-data/data-us-states.csv"
+                    data-columns="3"
+                    data-rows="2"
+                    data-map-projection="geoAlbersUsa"
+                    data-title="<b>Occurrences</b> per 100,000"
+                    data-number-of-colors="6"
+                    data-color-lowest="#deebf7"
+                    data-color-highest="#3182bd"
+                    data-color-no-data="#bbb">
+                </div>
             </div>
         </div>
         <script src="dist/doppler-maps.min.js"></script>
