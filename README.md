@@ -15,7 +15,8 @@ Doppler Maps is a tool based on D3.js for generating lightweight, responsive mul
         data-title="<b>Occurrences</b> per 100,000"
         data-number-of-colors="6"
         data-color-lowest="yellow"
-        data-color-highest="red">
+        data-color-highest="red"
+        data-color-no-data="#bbb">
     </div>
     <script src="dist/doppler-maps.min.js"></script>
 </body>
@@ -30,7 +31,8 @@ Doppler Maps is a tool based on D3.js for generating lightweight, responsive mul
         data-rows="2"
         data-map-projection="geoAlbersUsa"
         data-title="<b>Occurrences</b> per 100,000"
-        data-colors="yellow:orange:red">
+        data-colors="yellow:orange:red"
+        data-color-no-data="#bbb">
     </div>
     <script src="dist/doppler-maps.min.js"></script>
 </body>
@@ -180,6 +182,20 @@ Doppler Maps uses this color to compute the color palette used in choropleth map
 data-color-highest="red"
 data-color-highest="#f00"
 data-color-highest="rgb(255, 0, 0)"
+```
+
+### data-color-no-data [optional]
+
+#### Description
+
+Value must be a [CSS Color Module Level 3](https://www.w3.org/TR/css3-color/#colorunits) specifier.
+Doppler Maps fills geographic subunits having no associated data with this color.
+
+#### Examples
+
+```html
+data-color-no-data="#bbb"
+data-color-no-data="rgb(187, 187, 187)"
 ```
 
 ### data-colors [optional]

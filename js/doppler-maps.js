@@ -20,6 +20,10 @@ let optionIsProvided = (option) => {
     return option !== '' && typeof option !== 'undefined';
 };
 
+let colorIsValid = (color) => {
+    return d3.color(color) !== null;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     let allDopplerMapsEl = document.querySelectorAll('.doppler-maps');
     [...allDopplerMapsEl].forEach((dopplerMapsEl) => {
@@ -35,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             numberOfColors:         dopplerMapsEl.dataset.numberOfColors,
             colorLowest:            dopplerMapsEl.dataset.colorLowest,
             colorHighest:           dopplerMapsEl.dataset.colorHighest,
+            colorNoData:            dopplerMapsEl.dataset.colorNoData,
             colors:                 dopplerMapsEl.dataset.colors
         };
 
@@ -211,6 +216,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     let aspectRatio = (bounds[1][1] - bounds[0][1]) / (bounds[1][0] - bounds[0][0]);
                     let width = null, height = null;
 
+                    let noDataColor = null;
+                    if (optionIsProvided(options.colorNoData)) {
+                        if (colorIsValid(options.colorNoData)) {
+                            noDataColor = options.colorNoData;
+                        } else {
+                            throw new Error('The provided \'data-color-no-data\' attribute value is not a valid color unit');
+                        }
+                    } else {
+                        noDataColor = '#c7c8c9';
+                    }
+
                     let renderMap = () => {
                         width = parseFloat(getComputedStyle(mapEl).width);
                         height = width * aspectRatio;
@@ -221,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         canvas.attr('width', width).attr('height', height);
 
                         mapData.values.forEach((value) => {
-                            context.fillStyle = (value.statisticalValue === null ? '#c7c8c9' : colorScale(value.statisticalValue));
+                            context.fillStyle = (value.statisticalValue === null ? noDataColor : colorScale(value.statisticalValue));
                             context.beginPath();
                             path(value.subunit);
                             context.stroke();
