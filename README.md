@@ -89,7 +89,7 @@ data-geo-src="https://d3js.org/us-10m.v1.json"
 
 #### Description
 
-Value must be a path to a valid CSV file. The first column of the CSV file **must** be named `location` (case-insensitive).
+Value must be a path to a valid CSV file. The first column of the CSV file **must** be named `location` (case-sensitive).
 
 | location  | 2003 | 2004 | 2005 |
 | --------- | ---- | ---- | ---- |
