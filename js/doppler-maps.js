@@ -137,7 +137,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 let colorPalette = null;
                 if (optionIsProvided(options.colors)) {
                     colorPalette = options.colors.split(':');
+                    colorPalette.forEach((color) => {
+                        if (!colorIsValid(color)) {
+                            throw new Error('At least one of the listed colors in the provided \'data-colors\' attribute value is not a valid color unit');
+                        }
+                    });
                 } else {
+                    if (!colorIsValid(options.colorLowest)) {
+                        throw new Error('The provided \'data-color-lowest\' attribute value is not a valid color unit');
+                    }
+
+                    if (!colorIsValid(options.colorHighest)) {
+                        throw new Error('The provided \'data-color-highest\' attribute value is not a valid color unit');
+                    }
+
                     let interpolator = d3.interpolateRgb(options.colorLowest, options.colorHighest);
                     colorPalette = d3.quantize(interpolator, options.numberOfColors);
                 }
