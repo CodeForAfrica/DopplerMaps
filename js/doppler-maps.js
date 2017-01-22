@@ -43,6 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
             colors:                 dopplerMapsEl.dataset.colors
         };
 
+        const defaults = {
+            columns:                3,
+            mapProjection:          d3.geoMercator(),
+            numberOfColors:         5,
+            colorLowest:            '#deebf7',
+            colorHighest:           '#3182bd',
+            colorNoData:            '#c7c8c9'
+        };
+
         if (!optionIsProvided(options.geoSrc)) {
             throw new Error('Please provide a \'data-geo-src\' attribute.');
         }
@@ -53,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let projection = null;
         if (!optionIsProvided(options.mapProjection)) {
-            projection = d3.geoMercator();
+            projection = defaults.mapProjection;
         } else if (typeof d3[options.mapProjection] === 'undefined') {
             throw new Error('The provided \'data-map-projection\' attribute value does not correspond to a map projection.');
         } else {
@@ -143,16 +152,33 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                 } else {
-                    if (!colorIsValid(options.colorLowest)) {
-                        throw new Error('The provided \'data-color-lowest\' attribute value is not a valid color unit');
+                    let colorLowest = null, colorHighest = null;
+                    if (optionIsProvided(options.colorLowest)) {
+                        if (!colorIsValid(options.colorLowest)) {
+                            throw new Error('The provided \'data-color-lowest\' attribute value is not a valid color unit');
+                        } else {
+                            colorLowest = options.colorLowest;
+                        }
+                    } else {
+                        colorLowest = defaults.colorLowest;
                     }
 
-                    if (!colorIsValid(options.colorHighest)) {
-                        throw new Error('The provided \'data-color-highest\' attribute value is not a valid color unit');
+                    if (optionIsProvided(options.colorHighest)) {
+                        if (!colorIsValid(options.colorHighest)) {
+                            throw new Error('The provided \'data-color-highest\' attribute value is not a valid color unit');
+                        } else {
+                            colorHighest = options.colorHighest;
+                        }
+                    } else {
+                        colorHighest = defaults.colorHighest;
                     }
 
-                    let interpolator = d3.interpolateRgb(options.colorLowest, options.colorHighest);
-                    colorPalette = d3.quantize(interpolator, options.numberOfColors);
+                    let interpolator = d3.interpolateRgb(colorLowest, colorHighest);
+                    if (optionIsProvided(options.numberOfColors)) {
+                        colorPalette = d3.quantize(interpolator, options.numberOfColors);
+                    } else {
+                        colorPalette = d3.quantize(interpolator, defaults.numberOfColors);
+                    }
                 }
                 let colorScale = d3.scaleQuantize()
                     .domain([min, max])
@@ -204,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Do not render a map if the maximum number of rows
                     // specified with the option 'data-rows' is exceeded.
                     if (optionIsProvided(options.rows)) {
-                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = options.columns * options.rows;
+                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = (optionIsProvided(options.columns) ? options.columns : defaults.columns) * options.rows;
                         const MAP_INDEX = i + 1;
                         if (MAP_INDEX > MAXIMUM_NUMBER_OF_MAPS_TO_RENDER) {
                             return;
@@ -214,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let map = mapContainer.append('div')
                         .attr('class', 'doppler-maps__map')
                         .style('display', 'inline-block')
-                        .style('width', 100 / options.columns + '%');
+                        .style('width', 100 / (optionIsProvided(options.columns) ? options.columns : defaults.columns) + '%');
 
                     let mapEl = map.node();
 
@@ -237,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             throw new Error('The provided \'data-color-no-data\' attribute value is not a valid color unit');
                         }
                     } else {
-                        noDataColor = '#c7c8c9';
+                        noDataColor = defaults.colorNoData;
                     }
 
                     let renderMap = () => {
