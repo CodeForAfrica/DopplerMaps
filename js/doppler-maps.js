@@ -1,8 +1,11 @@
 import * as d3All from 'd3';
 import * as d3GeoProjection from 'd3-geo-projection';
 import * as topojson from 'topojson';
+import objectAssign from 'object-assign';  // Needed for IE 11 support.
+import arrayFrom from 'array.from';        // Needed for IE 11 support.
+arrayFrom.shim();
 
-let d3 = Object.assign({}, d3All, d3GeoProjection);
+let d3 = objectAssign({}, d3All, d3GeoProjection);
 
 let compareWords = (a, b) => {
     a = a.toLowerCase();

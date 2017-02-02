@@ -8,6 +8,7 @@ const gulp          = require('gulp'),
     buffer          = require('vinyl-buffer'),
     babel           = require('rollup-plugin-babel'),
     nodeResolve     = require('rollup-plugin-node-resolve'),
+    commonjs        = require('rollup-plugin-commonjs'),
     browserSync     = require('browser-sync').create(),
     reload          = browserSync.reload;
 
@@ -41,6 +42,12 @@ gulp.task('build:scripts', () => {
             nodeResolve({
                 jsnext: true,
                 main: true
+            }),
+            commonjs({
+                include: 'node_modules/**',
+                namedExports: {
+                    'node_modules/object-assign/index.js': ['objectAssign']
+                }
             })
         ]
     })
