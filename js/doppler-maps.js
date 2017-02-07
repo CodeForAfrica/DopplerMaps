@@ -317,7 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     renderMap();
-                    window.addEventListener('resize', renderMap);
+                    let timeout = null;
+                    window.addEventListener('resize', () => {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(renderMap, 100);
+                    });
 
                     // Create map label.
                     map.append('div')
