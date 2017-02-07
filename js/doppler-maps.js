@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add legend container.
         let mapLegend = dopplerMaps.append('div')
             .attr('class', 'doppler-maps__legend')
-            .style('text-align', 'center');
+            .style('text-align', 'center')
+            .style('margin-bottom', '1.5em');
 
         // Add title only if the user specified one.
         if (optionIsProvided(options.title)) {
@@ -257,22 +258,39 @@ document.addEventListener('DOMContentLoaded', () => {
                         .style('line-height', '1em')
                         .text(d => d3.format('.1f')(colorScale.invertExtent(d)[1]));
                 }
+
+                // Calculate the number of columns and rows.
+                let nColumns = (optionIsProvided(options.columns) ? options.columns : defaults.columns);
+                let nRows = optionIsProvided(options.rows) ? options.rows : Math.ceil(mapsData.length / nColumns);
+
                 // Create one map for each year.
                 mapsData.forEach((mapData, i) => {
                     // Do not render a map if the maximum number of rows
                     // specified with the option 'data-rows' is exceeded.
                     if (optionIsProvided(options.rows)) {
-                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = (optionIsProvided(options.columns) ? options.columns : defaults.columns) * options.rows;
+                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = nColumns * nRows;
                         const MAP_INDEX = i + 1;
                         if (MAP_INDEX > MAXIMUM_NUMBER_OF_MAPS_TO_RENDER) {
                             return;
                         }
                     }
 
+                    const HORIZONTAL_GAP_SIZE_PERCENT = 2;
+                    let mapWidth = 100 / nColumns - (HORIZONTAL_GAP_SIZE_PERCENT * (nColumns - 1) / nColumns);
                     let map = mapContainer.append('div')
                         .attr('class', 'doppler-maps__map')
                         .style('display', 'inline-block')
-                        .style('width', 100 / (optionIsProvided(options.columns) ? options.columns : defaults.columns) + '%');
+                        .style('width', mapWidth + '%');
+
+                    // Only add a right margin to maps that are not in the last column.
+                    if ((i+1) % nColumns !== 0) {
+                        map.style('margin-right', HORIZONTAL_GAP_SIZE_PERCENT + '%');
+                    }
+
+                    // Only add a bottom margin to maps that are not in the last row.
+                    if ((i+1) <= (nRows - 1) * nColumns) {
+                        map.style('margin-bottom', '5%');
+                    }
 
                     let mapEl = map.node();
 
@@ -326,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Create map label.
                     map.append('div')
                         .attr('class', 'doppler-maps__date')
-                        .style('margin-top', '1em')
+                        .style('margin-top', '10%')
                         .style('font-family', optionIsProvided(options.labelFontFamily) ? options.labelFontFamily : defaults.labelFontFamily)
                         .style('font-size', optionIsProvided(options.labelFontSize) ? options.labelFontSize : defaults.labelFontSize)
                         .style('text-align', 'center')
