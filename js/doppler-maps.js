@@ -43,7 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
             colorLowest:            dopplerMapsEl.dataset.colorLowest,
             colorHighest:           dopplerMapsEl.dataset.colorHighest,
             colorNoData:            dopplerMapsEl.dataset.colorNoData,
-            colors:                 dopplerMapsEl.dataset.colors
+            colors:                 dopplerMapsEl.dataset.colors,
+            legendTitleFontFamily:  dopplerMapsEl.dataset.legendTitleFontFamily,
+            legendTitleFontSize:    dopplerMapsEl.dataset.legendTitleFontSize,
+            labelFontFamily:        dopplerMapsEl.dataset.labelFontFamily,
+            labelFontSize:          dopplerMapsEl.dataset.labelFontSize
         };
 
         const defaults = {
@@ -52,7 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
             numberOfColors:         5,
             colorLowest:            '#deebf7',
             colorHighest:           '#3182bd',
-            colorNoData:            '#c7c8c9'
+            colorNoData:            '#c7c8c9',
+            legendTitleFontFamily:  'sans-serif',
+            legendTitleFontSize:    '16px',
+            labelFontFamily:        'sans-serif',
+            labelFontSize:          '16px'
         };
 
         if (!optionIsProvided(options.geoSrc)) {
@@ -82,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
             mapLegend.append('div')
                 .attr('class', 'doppler-maps__legend-title')
                 .style('margin-bottom', '0.4em')
+                .style('font-family', optionIsProvided(options.legendTitleFontFamily) ? options.legendTitleFontFamily : defaults.legendTitleFontFamily)
+                .style('font-size', optionIsProvided(options.legendTitleFontSize) ? options.legendTitleFontSize : defaults.legendTitleFontSize)
                 .html(options.title);
         }
 
@@ -294,7 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     map.append('div')
                         .attr('class', 'doppler-maps__date')
                         .style('margin-top', '1em')
-                        .style('font-size', '16px')
+                        .style('font-family', optionIsProvided(options.labelFontFamily) ? options.labelFontFamily : defaults.labelFontFamily)
+                        .style('font-size', optionIsProvided(options.labelFontSize) ? options.labelFontSize : defaults.labelFontSize)
                         .style('text-align', 'center')
                         .text(mapData.year);
                 });

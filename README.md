@@ -230,6 +230,62 @@ data-colors="rgb(255, 255, 0):rgb(255, 165, 0):rgb(255, 0, 0)"
 data-colors="yellow:#ffa500:rgb(255, 0, 0)"
 ```
 
+### data-legend-title-font-family [optional]
+
+#### Description
+
+Value must be a valid [CSS font family](https://developer.mozilla.org/en/docs/Web/CSS/font-family#Valid_family_names).
+If no value is specified, the default legend title font family is sans-serif.
+
+### Examples
+
+```html
+data-legend-title-font-family="Open Sans, sans-serif"
+```
+
+### data-legend-title-font-size [optional]
+
+#### Description
+
+Value must be a valid [CSS font size](https://developer.mozilla.org/en/docs/Web/CSS/font-size#Possible_approaches).
+If no value is specified, the default legend title font size is 16px.
+
+### Examples
+
+```html
+data-legend-title-font-size="18px"
+data-legend-title-font-size="1.125em"
+data-legend-title-font-size="1.8rem"
+```
+
+### data-label-font-family [optional]
+
+#### Description
+
+Value must be a valid [CSS font family](https://developer.mozilla.org/en/docs/Web/CSS/font-family#Valid_family_names).
+If no value is specified, the default label font family is sans-serif.
+
+### Examples
+
+```html
+data-label-font-family="Open Sans, sans-serif"
+```
+
+### data-label-font-size [optional]
+
+#### Description
+
+Value must be a valid [CSS font size](https://developer.mozilla.org/en/docs/Web/CSS/font-size#Possible_approaches).
+If no value is specified, the default label font size is 16px.
+
+### Examples
+
+```html
+data-label-font-size="14px"
+data-label-font-size="0.875em"
+data-label-font-size="1.4rem"
+```
+
 
 ## Setup instructions
 
@@ -253,7 +309,6 @@ gulp
 ```
 
 4) Set up a server and watch for changes:
-
 
 ```
 gulp serve
