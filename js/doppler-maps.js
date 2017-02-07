@@ -44,8 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
             colorHighest:           dopplerMapsEl.dataset.colorHighest,
             colorNoData:            dopplerMapsEl.dataset.colorNoData,
             colors:                 dopplerMapsEl.dataset.colors,
+            legendDisable:          dopplerMapsEl.dataset.legendDisable,
             legendTitleFontFamily:  dopplerMapsEl.dataset.legendTitleFontFamily,
             legendTitleFontSize:    dopplerMapsEl.dataset.legendTitleFontSize,
+            legendTitleDisable:     dopplerMapsEl.dataset.legendTitleDisable,
             labelFontFamily:        dopplerMapsEl.dataset.labelFontFamily,
             labelFontSize:          dopplerMapsEl.dataset.labelFontSize
         };
@@ -57,8 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
             colorLowest:            '#deebf7',
             colorHighest:           '#3182bd',
             colorNoData:            '#c7c8c9',
+            legendDisable:          false,
             legendTitleFontFamily:  'sans-serif',
             legendTitleFontSize:    '16px',
+            legendTitleDisable:     false,
             labelFontFamily:        'sans-serif',
             labelFontSize:          '16px'
         };
@@ -87,12 +91,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add title only if the user specified one.
         if (optionIsProvided(options.title)) {
-            mapLegend.append('div')
-                .attr('class', 'doppler-maps__legend-title')
-                .style('margin-bottom', '0.4em')
-                .style('font-family', optionIsProvided(options.legendTitleFontFamily) ? options.legendTitleFontFamily : defaults.legendTitleFontFamily)
-                .style('font-size', optionIsProvided(options.legendTitleFontSize) ? options.legendTitleFontSize : defaults.legendTitleFontSize)
-                .html(options.title);
+            let disableLegendTitle = null;
+            if (optionIsProvided(options.legendTitleDisable)) {
+                disableLegendTitle = (options.legendTitleDisable == 'true');
+            } else {
+                disableLegendTitle = defaults.legendTitleDisable;
+            }
+            if (!disableLegendTitle) {
+                mapLegend.append('div')
+                    .attr('class', 'doppler-maps__legend-title')
+                    .style('margin-bottom', '0.4em')
+                    .style('font-family', optionIsProvided(options.legendTitleFontFamily) ? options.legendTitleFontFamily : defaults.legendTitleFontFamily)
+                    .style('font-size', optionIsProvided(options.legendTitleFontSize) ? options.legendTitleFontSize : defaults.legendTitleFontSize)
+                    .html(options.title);
+            }
         }
 
         // Add maps container.
@@ -198,46 +210,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     .range(colorPalette);
 
                 // Add legend color palette items.
-                const TICK_WIDTH = 1,
-                      TICK_TEXT_FONT_SIZE = 14,
-                      TICK_TEXT_MARGIN_TOP = 18,
-                      COLOR_PALETTE_ITEM_HEIGHT = 10;
-                let legendColorPaletteItems = mapLegend.append('div')
-                    .attr('class', 'doppler-maps__legend-color-palette')
-                    .style('padding-bottom', TICK_TEXT_MARGIN_TOP - COLOR_PALETTE_ITEM_HEIGHT + TICK_TEXT_FONT_SIZE + 'px')
-                    .style('line-height', 0)
-                    .selectAll('.doppler-maps__legend-color-palette-item')
-                    .data(colorScale.range())
-                  .enter().append('div')
-                    .attr('class', 'doppler-maps__legend-color-palette-item')
-                    .style('position', 'relative')
-                    .style('display', 'inline-block')
-                    .style('margin-right', TICK_WIDTH + 'px')
-                    .style('max-width', '50px')
-                    .style('width', 'calc(100% / 6 - ' + TICK_WIDTH + 'px)')
-                    .style('height', COLOR_PALETTE_ITEM_HEIGHT + 'px')
-                    .style('background-color', d => d);
+                let disableLegend = null;
+                if (optionIsProvided(options.legendDisable)) {
+                    disableLegend = (options.legendDisable == 'true');
+                } else {
+                    disableLegend = defaults.legendDisable;
+                }
+                if (!disableLegend) {
+                    const TICK_WIDTH = 1,
+                          TICK_TEXT_FONT_SIZE = 14,
+                          TICK_TEXT_MARGIN_TOP = 18,
+                          COLOR_PALETTE_ITEM_HEIGHT = 10;
+                    let legendColorPaletteItems = mapLegend.append('div')
+                        .attr('class', 'doppler-maps__legend-color-palette')
+                        .style('padding-bottom', TICK_TEXT_MARGIN_TOP - COLOR_PALETTE_ITEM_HEIGHT + TICK_TEXT_FONT_SIZE + 'px')
+                        .style('line-height', 0)
+                        .selectAll('.doppler-maps__legend-color-palette-item')
+                        .data(colorScale.range())
+                      .enter().append('div')
+                        .attr('class', 'doppler-maps__legend-color-palette-item')
+                        .style('position', 'relative')
+                        .style('display', 'inline-block')
+                        .style('margin-right', TICK_WIDTH + 'px')
+                        .style('max-width', '50px')
+                        .style('width', 'calc(100% / 6 - ' + TICK_WIDTH + 'px)')
+                        .style('height', COLOR_PALETTE_ITEM_HEIGHT + 'px')
+                        .style('background-color', d => d);
 
-                // Add legend color palette ticks.
-                legendColorPaletteItems.filter(':not(:last-child)')
-                    .append('div')
-                    .attr('class', 'doppler-maps__legend-color-palette-tick')
-                    .style('position', 'absolute')
-                    .style('top', '0')
-                    .style('right', -TICK_WIDTH + 'px')
-                    .style('display', 'inline-block')
-                    .style('width', TICK_WIDTH + 'px')
-                    .style('height', '100%')
-                    .style('background-color', '#333')
-                    .style('font-size', TICK_TEXT_FONT_SIZE + 'px')
-                  .append('div')
-                    .style('position', 'absolute')
-                    .style('left', '-1em')
-                    .style('margin-top', TICK_TEXT_MARGIN_TOP + 'px')
-                    .style('width', '2em')
-                    .style('line-height', '1em')
-                    .text(d => d3.format('.1f')(colorScale.invertExtent(d)[1]));
-
+                    // Add legend color palette ticks.
+                    legendColorPaletteItems.filter(':not(:last-child)')
+                        .append('div')
+                        .attr('class', 'doppler-maps__legend-color-palette-tick')
+                        .style('position', 'absolute')
+                        .style('top', '0')
+                        .style('right', -TICK_WIDTH + 'px')
+                        .style('display', 'inline-block')
+                        .style('width', TICK_WIDTH + 'px')
+                        .style('height', '100%')
+                        .style('background-color', '#333')
+                        .style('font-size', TICK_TEXT_FONT_SIZE + 'px')
+                      .append('div')
+                        .style('position', 'absolute')
+                        .style('left', '-1em')
+                        .style('margin-top', TICK_TEXT_MARGIN_TOP + 'px')
+                        .style('width', '2em')
+                        .style('line-height', '1em')
+                        .text(d => d3.format('.1f')(colorScale.invertExtent(d)[1]));
+                }
                 // Create one map for each year.
                 mapsData.forEach((mapData, i) => {
                     // Do not render a map if the maximum number of rows
