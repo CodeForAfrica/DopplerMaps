@@ -146,6 +146,20 @@ data-map-projection="geoRobinson"
 data-map-projection="geoMercator"
 ```
 
+### data-map-minimum-width [optional]
+
+#### Description
+
+Value must be a positive integer in pixels.
+This sets the minimum width an individual map can take before the number of columns is decreased.
+If no value is specified, individual maps will not be assigned a minimum width and the number of columns will remain the same for all viewport widths.
+
+#### Examples
+
+```html
+data-map-minimum-width="90px"
+```
+
 ### data-title [optional]
 
 #### Description

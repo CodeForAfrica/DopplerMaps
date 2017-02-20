@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             columns:                dopplerMapsEl.dataset.columns,
             rows:                   dopplerMapsEl.dataset.rows,
             mapProjection:          dopplerMapsEl.dataset.mapProjection,
+            mapMinimumWidth:        dopplerMapsEl.dataset.mapMinimumWidth,
             title:                  dopplerMapsEl.dataset.title,
             numberOfColors:         dopplerMapsEl.dataset.numberOfColors,
             colorLowest:            dopplerMapsEl.dataset.colorLowest,
@@ -110,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add maps container.
         let mapContainer = dopplerMaps.append('div')
-            .attr('class', 'doppler-maps__maps-container');
+            .attr('class', 'doppler-maps__maps-container')
+            .style('margin-left', '-1%')
+            .style('margin-right', '-1%');
 
         d3.queue()
             .defer(d3.json, options.geoSrc)
@@ -260,35 +263,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Calculate the number of columns and rows.
-                let nColumns = (optionIsProvided(options.columns) ? options.columns : defaults.columns);
-                let nRows = optionIsProvided(options.rows) ? options.rows : Math.ceil(mapsData.length / nColumns);
+                let nColumns = (optionIsProvided(options.columns) ? +options.columns : +defaults.columns);
+                let nColumnsActual = nColumns;
+                let nRows = optionIsProvided(options.rows) ? +options.rows : Math.ceil(mapsData.length / nColumns);
+
+                // Calculate the width of a single map in the grid.
+                const HORIZONTAL_GAP_SIZE_PERCENT = 2;
+                let computeMapWidthPercent = () => {
+                    let mapContainerEl = mapContainer.node();
+                    let mapContainerWidth = Math.floor(parseFloat(getComputedStyle(mapContainerEl).width));
+                    if (optionIsProvided(options.mapMinimumWidth)) {
+                        nColumnsActual = Math.floor(mapContainerWidth / parseFloat(options.mapMinimumWidth));
+                        if (nColumnsActual > nColumns) {
+                            nColumnsActual = nColumns;
+                        }
+                    } else {
+                        nColumnsActual = nColumns;
+                    }
+                    return 100 / nColumnsActual - HORIZONTAL_GAP_SIZE_PERCENT;
+                };
+                let mapWidthPercent = computeMapWidthPercent();
 
                 // Create one map for each year.
                 mapsData.forEach((mapData, i) => {
                     // Do not render a map if the maximum number of rows
                     // specified with the option 'data-rows' is exceeded.
                     if (optionIsProvided(options.rows)) {
-                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = nColumns * nRows;
+                        const MAXIMUM_NUMBER_OF_MAPS_TO_RENDER = nColumnsActual * nRows;
                         const MAP_INDEX = i + 1;
                         if (MAP_INDEX > MAXIMUM_NUMBER_OF_MAPS_TO_RENDER) {
                             return;
                         }
                     }
 
-                    const HORIZONTAL_GAP_SIZE_PERCENT = 2;
-                    let mapWidth = 100 / nColumns - (HORIZONTAL_GAP_SIZE_PERCENT * (nColumns - 1) / nColumns);
                     let map = mapContainer.append('div')
                         .attr('class', 'doppler-maps__map')
                         .style('display', 'inline-block')
-                        .style('width', mapWidth + '%');
-
-                    // Only add a right margin to maps that are not in the last column.
-                    if ((i+1) % nColumns !== 0) {
-                        map.style('margin-right', HORIZONTAL_GAP_SIZE_PERCENT + '%');
-                    }
+                        .style('width', mapWidthPercent + '%')
+                        .style('margin-right', '1%')
+                        .style('margin-left', '1%');
 
                     // Only add a bottom margin to maps that are not in the last row.
-                    if ((i+1) <= (nRows - 1) * nColumns) {
+                    if ((i+1) <= (nRows - 1) * nColumnsActual) {
                         map.style('margin-bottom', '5%');
                     }
 
@@ -338,7 +354,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     let timeout = null;
                     window.addEventListener('resize', () => {
                         clearTimeout(timeout);
-                        timeout = setTimeout(renderMap, 100);
+                        timeout = setTimeout(function() {
+                            mapWidthPercent = computeMapWidthPercent();
+                            map.style('width', mapWidthPercent + '%');
+                            renderMap();
+                        }, 100);
                     });
 
                     // Create map label.
