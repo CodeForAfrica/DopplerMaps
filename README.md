@@ -6,21 +6,19 @@ Doppler Maps is a tool based on [D3.js](https://d3js.org/) for generating lightw
 ## Usage
 
 ```html
-<body>
-    <div class="doppler-maps"
-        data-geo-src="data/us-states-random-data/geodata-us-states.json"
-        data-src="data/us-states-random-data/data-us-states.csv"
-        data-columns="3"
-        data-rows="2"
-        data-map-projection="geoAlbersUsa"
-        data-title="<b>Occurrences</b> per 100,000"
-        data-number-of-colors="6"
-        data-color-lowest="#e0f3db"
-        data-color-highest="#43a2ca"
-        data-color-no-data="#bbb">
-    </div>
-    <script src="https://cdn.jsdelivr.net/doppler-maps/1.0-beta/doppler-maps.min.js"></script>
-</body>
+<div class="doppler-maps"
+    data-geo-src="https://rawgit.com/CodeForAfrica/DopplerMaps/master/data/us-states-random-data/geodata-us-states.json"
+    data-src="https://rawgit.com/CodeForAfrica/DopplerMaps/master/data/us-states-random-data/data-us-states.csv"
+    data-columns="3"
+    data-rows="2"
+    data-map-projection="geoAlbersUsa"
+    data-title="<b>Occurrences</b> per 100,000"
+    data-number-of-colors="6"
+    data-color-lowest="#e0f3db"
+    data-color-highest="#43a2ca"
+    data-color-no-data="#bbb">
+</div>
+<script src="https://cdn.jsdelivr.net/doppler-maps/1.0-beta/doppler-maps.min.js"></script>
 ```
 
 
