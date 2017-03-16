@@ -315,6 +315,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Create 2D rendering context.
                     let context = canvas.node().getContext('2d');
+                    if (devicePixelRatio !== 1) {
+                        canvas.style('width', '100%');
+                        context.scale(devicePixelRatio, devicePixelRatio);
+                    }
 
                     let path = d3.geoPath().context(context).projection(projection);
                     let bounds = path.bounds(featureCollection);
@@ -335,6 +339,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     let renderMap = () => {
                         width = parseFloat(getComputedStyle(mapEl).width);
                         height = width * aspectRatio;
+
+                        if (devicePixelRatio !== 1) {
+                            width *= devicePixelRatio;
+                            height *= devicePixelRatio;
+                        }
 
                         projection.fitSize([width, height], featureCollection);
                         path.projection(projection);
