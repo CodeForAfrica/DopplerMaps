@@ -21,6 +21,7 @@ Doppler Maps is a tool based on [D3.js](https://d3js.org/) for generating lightw
 <script src="https://cdn.jsdelivr.net/doppler-maps/1.0-beta.1/doppler-maps.min.js"></script>
 ```
 
+![doppler-maps-screenshot](https://cloud.githubusercontent.com/assets/1498164/24730192/dfaaf562-1a6a-11e7-8587-d6fff451ac7a.png)
 
 ## API Reference
 
