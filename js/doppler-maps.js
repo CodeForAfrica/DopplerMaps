@@ -350,6 +350,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         canvas.attr('width', width).attr('height', height);
 
+                        context.lineWidth *= devicePixelRatio;
+
                         mapData.values.forEach((value) => {
                             context.fillStyle = (value.statisticalValue === null ? noDataColor : colorScale(value.statisticalValue));
                             context.beginPath();
