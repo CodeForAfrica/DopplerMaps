@@ -33,6 +33,7 @@ Listed below are required and optional data attributes you can set to configure 
 #### Description
 
 Value must be a path to a [TopoJSON](https://github.com/topojson/topojson-specification) file.
+A GeoJSON file can be [converted](https://github.com/CodeForAfrica/DopplerMaps/wiki/Convert-GeoJSON-to-TopoJSON) to a TopoJSON file.
 The TopoJSON file must have exactly **one** geometry object named `subunits` and with type `GeometryCollection`.
 
 For example:
