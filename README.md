@@ -298,7 +298,7 @@ data-legend-title-font-size="1.8rem"
 #### Description
 
 Value must be a boolean.
-If not value is specified, the default value is false.
+If no value is specified, the default value is false.
 
 #### Examples
 
